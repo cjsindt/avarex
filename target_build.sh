@@ -46,7 +46,7 @@ EOF
 ensure_container ()
 {
     if ! $CONTAINER_ENGINE ps -a --format '{{.Names}}' | grep -q "^$CONTAINER\$"; then
-        echo -e "\033[1;34mStarting container $CONTAINER from $IMAGE\033[0m"
+        echo -e "\033[1;34mStarting container \033[0m$CONTAINER \033[1;34mfrom \033[0m$IMAGE\033[0m"
         "$CONTAINER_ENGINE" run -dit \
             --name "$CONTAINER" \
             -v "$BASEDIR":"/workspace" \
@@ -54,72 +54,6 @@ ensure_container ()
             "$IMAGE" > /dev/null
     fi
 }
-
-# Runs a Single Build
-run_build ()
-{
-    local target="$1"
-    local log_file="$LOGS_DIR/$target.log"
-    local exit_file="$LOGS_DIR/$target.exit"
-    local cmd
-    cmd=$(build_cmd "$target")
-
-    rm -f "$exit_file"
-
-    if [[ "$DRY_RUN" == "true" ]]; then
-        echo -e "[DRY-RUN] $target: $cmd ${GRADLE_FLAGS[*]}\n"
-        return 0
-    fi
-
-    echo -e "\033[1;34mStarting $target\033[0m" >2&
-    echo -e "\033[1;34mRun \`tail -f ./log/$target.log\` to see live logs\033[0m" >2&
-   
-
-        "$CONTAINER_ENGINE" exec \
-            -e "GRADLE_OPTS=-Xmx${RAM_MB}m -XX:MaxMetaspaceSize=512m" \
-            -e "JAVA_TOOL_OPTIONS=-Xmx${RAM_MB}m" \
-            -e "FLUTTER_MAX_WORKERS=1" \
-            "$CONTAINER" \
-            bash -lc "$cmd ${GRADLE_FLAGS[*]} ; echo \$? > $exit_file" \
-            >"$log_file" 2>&1 &
-
-    local pid=$!
-    echo "$pid"
-}
-
-# Parse Flags
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        -p) PARALLEL=true; shift ;;
-        -d) IMAGE="$2"; shift 2 ;;
-        -t) TARGETS+=("$2"); shift 2 ;;
-        -r) RAM_MB="$2"; shift 2 ;;
-        -i) IMAGE="$2"; shift 2 ;;
-        -c) CONTAINER="$2"; shift 2 ;;
-        --dry-run) DRY_RUN=true; shift ;;
-        -h) usage ;;
-        *) echo "Unknown argument: $1"; usage ;;
-    esac
-done
-
-[[ ${#TARGETS[@]} -eq 0 ]] && usage
-mkdir -p "$LOGS_DIR"
-
-# Converts Build Argument to Flutter Build Command
-build_cmd ()
-{
-    case "$1" in
-        apk)        echo "flutter build apk -v" ;;
-        ios)        echo "flutter build ios -v" ;;
-        linux)      echo "flutter build linux -v" ;;
-        macos)      echo "flutter build macos -v" ;;
-        snap)       echo "flutter build snap -v" ;;
-        web)        echo "flutter build web -v" ;;
-        windows)    echo "flutter build windows -v" ;;
-        *)          echo "Unknown target: $1"; usage; exit 1 ;;
-    esac
-}
-
 
 # Spinny for Running Containers
 spinny()
@@ -150,6 +84,62 @@ spinny()
     fi
 }
 
+# Runs a Single Build
+run_build ()
+{
+    local target="$1"
+    local log_file="$LOGS_DIR/$target.log"
+    local exit_file="$LOGS_DIR/$target.exit"
+    local cmd
+    cmd=$(build_cmd "$target")
+
+    rm -f "$exit_file"
+
+    "$CONTAINER_ENGINE" exec \
+        -e "GRADLE_OPTS=-Xmx${RAM_MB}m -XX:MaxMetaspaceSize=512m" \
+        -e "JAVA_TOOL_OPTIONS=-Xmx${RAM_MB}m" \
+        -e "FLUTTER_MAX_WORKERS=1" \
+        "$CONTAINER" \
+        bash -lc "$cmd ${GRADLE_FLAGS[*]} ; echo \$? > $exit_file" \
+        >"$log_file" 2>&1 &
+
+    local pid=$!
+    echo "$pid"
+}
+
+# Parse Flags
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -p) PARALLEL=true; shift ;;
+        -d) IMAGE="$2"; shift 2 ;;
+        -t) TARGETS+=("$2"); shift 2 ;;
+        -r) RAM_MB="$2"; shift 2 ;;
+        -i) IMAGE="$2"; shift 2 ;;
+        -c) CONTAINER="$2"; shift 2 ;;
+        --dry-run) DRY_RUN=true; shift ;;
+        -h) usage ;;
+        *) echo "Unknown argument: $1"; usage ;;
+    esac
+done
+
+[[ ${#TARGETS[@]} -eq 0 ]] && usage
+mkdir -p "$LOGS_DIR"
+ensure_container
+
+# Converts Build Argument to Flutter Build Command
+build_cmd ()
+{
+    case "$1" in
+        apk)        echo "flutter build apk -v" ;;
+        ios)        echo "flutter build ios -v" ;;
+        linux)      echo "flutter build linux -v" ;;
+        macos)      echo "flutter build macos -v" ;;
+        snap)       echo "flutter build snap -v" ;;
+        web)        echo "flutter build web -v" ;;
+        windows)    echo "flutter build windows -v" ;;
+        *)          echo "Unknown target: $1"; usage; exit 1 ;;
+    esac
+}
 
 # Run Builds 
 if [[ "$PARALLEL" == false ]]; then
