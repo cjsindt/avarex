@@ -17,12 +17,6 @@ PARALLEL=false
 RAM_MB=1536
 TARGETS=()
 
-GRADLE_FLAGS=(
-    "-Dorg.gradle.caching=true"
-    "-Porg.gradle.workers.max=1"
-    "-Porg.gradle.parallel=false"
-    "--split-debug-info=build/debug-info"
-)
 
 usage ()
 {
@@ -79,7 +73,7 @@ spinny()
         if [ "$exit_code" -eq 0 ]; then
             printf "\r\033[1;32m%s:\033[0m [DONE]\n" "$target"
         else
-            printf "\r\033[1;32m%s:\033[0m FAILED\n" "$target"
+            printf "\r\033[1;31m%s:\033[0m [FAILED] See $LOGS_DIR/$target.log for more info\n" "$target"
         fi
     fi
 }
@@ -100,7 +94,7 @@ run_build ()
         -e "JAVA_TOOL_OPTIONS=-Xmx${RAM_MB}m" \
         -e "FLUTTER_MAX_WORKERS=1" \
         "$CONTAINER" \
-        bash -lc "$cmd ${GRADLE_FLAGS[*]} ; echo \$? > $exit_file" \
+        bash -lc "$cmd ; echo \$? > $exit_file" \
         >"$log_file" 2>&1 &
 
     local pid=$!
@@ -130,7 +124,7 @@ ensure_container
 build_cmd ()
 {
     case "$1" in
-        apk)        echo "flutter build apk -v" ;;
+        apk)        echo "flutter build apk -v -Dorg.gradle.caching=true -Porg.gradle.workers.max=1 -Porg.gradle.parallel=false --split-debug-info=build/debug-info" ;;
         ios)        echo "flutter build ios -v" ;;
         linux)      echo "flutter build linux -v" ;;
         macos)      echo "flutter build macos -v" ;;
@@ -145,7 +139,7 @@ build_cmd ()
 if [[ "$PARALLEL" == false ]]; then
     for target in "${TARGETS[@]}"; do
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "\033[1;34m[DRY-RUN] $target: \033[0m$(build_cmd $target) ${GRADLE_FLAGS[*]}\n"
+            echo -e "\033[1;34m[DRY-RUN] $target: \033[0m$(build_cmd $target)\n"
         else 
             pid=$(run_build "$target")
             spinny "$pid" "$target"
