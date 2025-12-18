@@ -27,7 +27,7 @@ GRADLE_FLAGS=(
 usage ()
 {
     cat <<EOF
-Usage: $0 -t <target> [-t <target> ...] [-p] [-r <ram_mb>] [-i <image>] [--dry-run]
+Usage: $0 -t <target> [-t <target> ...] [-p] [-r <ram_mb>] [-i <image>] [-c <container>] [--dry-run]
 
 Flags:
   -t <target>       Build target (repeatable)
@@ -43,6 +43,18 @@ EOF
     exit 1
 }
 
+ensure_container ()
+{
+    if ! $CONTAINER_ENGINE ps -a --format '{{.Names}}' | grep -q "^$CONTAINER\$"; then
+        echo -e "\033[1;34mStarting container $CONTAINER from $IMAGE\033[0m"
+        "$CONTAINER_ENGINE" run -dit \
+            --name "$CONTAINER" \
+            -v "$BASEDIR":"/workspace" \
+            -w "/workspace" \
+            "$IMAGE" > /dev/null
+    fi
+}
+
 # Runs a Single Build
 run_build ()
 {
@@ -51,32 +63,23 @@ run_build ()
     local exit_file="$LOGS_DIR/$target.exit"
     local cmd
     cmd=$(build_cmd "$target")
-    local container="flutter-builder"
 
     rm -f "$exit_file"
 
     if [[ "$DRY_RUN" == "true" ]]; then
-        echo "[DRY-RUN] $target: $cmd ${GRADLE_FLAGS[*]}"
+        echo -e "[DRY-RUN] $target: $cmd ${GRADLE_FLAGS[*]}\n"
         return 0
     fi
 
     echo -e "\033[1;34mStarting $target\033[0m" >2&
     echo -e "\033[1;34mRun \`tail -f ./log/$target.log\` to see live logs\033[0m" >2&
    
-    if ! $CONTAINER_ENGINE ps -a --format '{{.Names}}' | grep -q "^$container\$"; then
-        echo -e "\033[1;34mStarting container $container from $IMAGE\033[0m"
-        "$CONTAINER_ENGINE" run -dit \
-            --name "$container" \
-            -v "$BASEDIR":"/workspace" \
-            -w "/workspace" \
-            "$IMAGE" > /dev/null
-    fi
 
         "$CONTAINER_ENGINE" exec \
             -e "GRADLE_OPTS=-Xmx${RAM_MB}m -XX:MaxMetaspaceSize=512m" \
             -e "JAVA_TOOL_OPTIONS=-Xmx${RAM_MB}m" \
             -e "FLUTTER_MAX_WORKERS=1" \
-            "$container" \
+            "$CONTAINER" \
             bash -lc "$cmd ${GRADLE_FLAGS[*]} ; echo \$? > $exit_file" \
             >"$log_file" 2>&1 &
 
@@ -151,9 +154,13 @@ spinny()
 # Run Builds 
 if [[ "$PARALLEL" == false ]]; then
     for target in "${TARGETS[@]}"; do
-        pid=$(run_build "$target")
-        spinny "$pid" "$target"
-        wait || echo -e "\033[1;31m$target failed. Check $LOGS_DIR/$target.log\033[0m"
+        if [[ "$DRY_RUN" == "true" ]]; then
+            echo -e "\033[1;34m[DRY-RUN] $target: \033[0m$(build_cmd $target) ${GRADLE_FLAGS[*]}\n"
+        else 
+            pid=$(run_build "$target")
+            spinny "$pid" "$target"
+            wait || echo -e "\033[1;31m$target failed. Check $LOGS_DIR/$target.log\033[0m"
+        fi
     done
     exit 0
 fi
