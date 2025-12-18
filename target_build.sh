@@ -9,6 +9,7 @@ CONTAINER_ENGINE="docker"
 BASEDIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 # Default Values
+CONTAINER="flutter-builder"
 DRY_RUN=false
 IMAGE="avarex-builder:latest"
 LOGS_DIR="./log"
@@ -29,14 +30,15 @@ usage ()
 Usage: $0 -t <target> [-t <target> ...] [-p] [-r <ram_mb>] [-i <image>] [--dry-run]
 
 Flags:
-  -t <target>   Build target (repeatable)
-                apk | ios | linux | macos | snap | web | windows
-  -p            Build targets in parallel
-                (May require lots of RAM)
-  -r <ram_mb>   RAM limit in MB (default: 1536)
-  -i <image>    Use alternate image (default: avarex-builder:latest)
-  --dry-run     Show commands without executing
-  -h            Show this help page
+  -t <target>       Build target (repeatable)
+                    apk | ios | linux | macos | snap | web | windows
+  -p                Build targets in parallel
+                    (Requires more RAM)
+  -r <ram_mb>       Gradle RAM limit in MB (default: 1536)
+  -i <image>        Use alternate image (default: avarex-builder:latest)
+  -c <container>    Rename build container (default: flutter-builder)
+  --dry-run         Show commands without executing
+  -h                Show this help page
 EOF
     exit 1
 }
@@ -89,7 +91,8 @@ while [[ $# -gt 0 ]]; do
         -d) IMAGE="$2"; shift 2 ;;
         -t) TARGETS+=("$2"); shift 2 ;;
         -r) RAM_MB="$2"; shift 2 ;;
-        -i) IMAGE-"$2"; shift 2 ;;
+        -i) IMAGE="$2"; shift 2 ;;
+        -c) CONTAINER="$2"; shift 2 ;;
         --dry-run) DRY_RUN=true; shift ;;
         -h) usage ;;
         *) echo "Unknown argument: $1"; usage ;;
@@ -132,12 +135,14 @@ spinny()
         done
     done
 
+    printf "\r%b%s:%b                   " "$color" "$target" "$reset"
+
     if [ -f "$LOGS_DIR/$target.exit" ]; then
         exit_code=$(cat "$LOGS_DIR/$target.exit")
         if [ "$exit_code" -eq 0 ]; then
-            printf "\r%s: \033[1;32mDONE\033[0m\n" "$target"
+            printf "\r\033[1;32m%s:\033[0m [DONE]\n" "$target"
         else
-            printf "\r%s: \033[1;32mFAILED\033[0m\n" "$target"
+            printf "\r\033[1;32m%s:\033[0m FAILED\n" "$target"
         fi
     fi
 }
