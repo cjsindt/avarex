@@ -46,9 +46,12 @@ run_build ()
 {
     local target="$1"
     local log_file="$LOGS_DIR/$target.log"
+    local exit_file="$LOGS_DIR/$target.exit"
     local cmd
     cmd=$(build_cmd "$target")
     local container="flutter-builder"
+
+    rm -f "$exit_file"
 
     if [[ "$DRY_RUN" == "true" ]]; then
         echo "[DRY-RUN] $target: $cmd ${GRADLE_FLAGS[*]}"
@@ -67,12 +70,12 @@ run_build ()
             "$IMAGE" > /dev/null
     fi
 
-    "$CONTAINER_ENGINE" exec \
+        "$CONTAINER_ENGINE" exec \
             -e "GRADLE_OPTS=-Xmx${RAM_MB}m -XX:MaxMetaspaceSize=512m" \
             -e "JAVA_TOOL_OPTIONS=-Xmx${RAM_MB}m" \
             -e "FLUTTER_MAX_WORKERS=1" \
             "$container" \
-            bash -lc "$cmd ${GRADLE_FLAGS[*]}" \
+            bash -lc "$cmd ${GRADLE_FLAGS[*]} ; echo \$? > $exit_file" \
             >"$log_file" 2>&1 &
 
     local pid=$!
@@ -128,7 +131,15 @@ spinny()
             sleep $delay
         done
     done
-    printf "\r%s: \033[1;32mDONE\033[0m\n" "$target"
+
+    if [ -f "$LOGS_DIR/$target.exit" ]; then
+        exit_code=$(cat "$LOGS_DIR/$target.exit")
+        if [ "$exit_code" -eq 0 ]; then
+            printf "\r%s: \033[1;32mDONE\033[0m\n" "$target"
+        else
+            printf "\r%s: \033[1;32mFAILED\033[0m\n" "$target"
+        fi
+    fi
 }
 
 
