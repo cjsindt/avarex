@@ -406,7 +406,7 @@ class DownloadScreenState extends State<DownloadScreen> {
     ),
     ChartCategory(
       ChartType.tac,
-      ChartType.tac.dislayName,
+      ChartType.tac.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_TAC',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),

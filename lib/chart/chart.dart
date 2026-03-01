@@ -52,17 +52,17 @@ class Chart {
 }
 
 enum ChartType {
-  sectional("Sectional"),
-  tac("TAC"),
-  ifrl("IFR Low"),
-  ifrh("IFR High"),
-  ifra("IFR Area"),
-  flyway("Flyway"),
-  heli("Helicopter"),
-  plates("Plates"),
-  databases("Databases"),
-  csup("CSUP"),
-  elevation("Elevation");
+  sectional(ChartCategory.sectional),
+  tac(ChartCategory.tac),
+  ifrl(ChartCategory.ifrl),
+  ifrh(ChartCategory.ifrh),
+  ifra(ChartCategory.ifra),
+  flyway(ChartCategory.flyway),
+  heli(ChartCategory.heli),
+  plates(ChartCategory.plates),
+  databases(ChartCategory.databases),
+  csup(ChartCategory.csup),
+  elevation(ChartCategory.elevation);
 
   final String displayName;
   const ChartType(this.displayName);
@@ -70,6 +70,18 @@ enum ChartType {
   
 // Chart category like sectional, IFR, ...
 class ChartCategory {
+
+  static const String sectional = "Sectional";
+  static const String tac = "TAC";
+  static const String ifrl = "IFR Low";
+  static const String ifrh = "IFR High";
+  static const String ifra = "IFR Area";
+  static const String flyway = "Flyway";
+  static const String heli = "Helicopter";
+  static const String plates = "Plates";
+  static const String databases = "Databases";
+  static const String csup = "CSUP";
+  static const String elevation = "Elevation";
 
   ChartType type;
   String title;
