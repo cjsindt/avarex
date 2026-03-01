@@ -315,7 +315,7 @@ class DownloadScreenState extends State<DownloadScreen> {
         cg.color = _absentColor;
       }
 
-      cg.title = "${cg.title} ($currentCharts of ${cg.charts.length})";
+      cg.title = "${cg.type.displayName} ($currentCharts of ${cg.charts.length})";
     }
   }
 
