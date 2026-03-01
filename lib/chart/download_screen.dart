@@ -379,8 +379,8 @@ class DownloadScreenState extends State<DownloadScreen> {
   // ALl that can be downloaded
   static final List<ChartCategory> _allCharts = [
     ChartCategory(
-      ChartCategory.ChartType.databases,
-      ChartCategory.ChartType.databases.displayName,
+      ChartType.databases,
+      ChartType.databases.displayName,
       _absentColor,
       [
         Chart('DatabasesX', _absentColor, _absentIcon, 'databasesx', _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
