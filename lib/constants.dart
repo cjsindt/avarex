@@ -34,6 +34,7 @@ class Constants {
   static const Color chartAbsentColor = Colors.grey;
   static const Color chartCurrentColor = Colors.green;
   static const Color chartExpiredColor = Colors.red;
+  static const Color chartDownloadingColor = Colors.yellow;
 
   static Color mapBackgroundColorDark = Colors.grey.shade800;
   static Color mapBackgroundColorLight = Colors.white;

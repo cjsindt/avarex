@@ -288,7 +288,7 @@ class DownloadScreenState extends State<DownloadScreen> {
   void _updateCategory() {
     for (ChartCategory cg in _allCharts) {
       bool expired = false;
-      bool current = false;
+      int currentCharts = 0;
       for (Chart chart in cg.charts) {
         switch (chart.state) {
           case _stateExpiredNone:
@@ -299,7 +299,7 @@ class DownloadScreenState extends State<DownloadScreen> {
           case _stateCurrentNone:
           case _stateCurrentDownload:
           case _stateCurrentDelete:
-            current = current || true;
+            currentCharts++;
           default:
             break;
         }
@@ -308,13 +308,14 @@ class DownloadScreenState extends State<DownloadScreen> {
       if(expired) {
         cg.color = _expiredColor;
       }
-      else if (current) {
+      else if (currentCharts > 0) {
         cg.color = _currentColor;
       }
       else {
         cg.color = _absentColor;
       }
 
+      cg.title = "${cg.title} ($currentCharts of ${cg.charts.length})";
     }
   }
 
@@ -378,7 +379,8 @@ class DownloadScreenState extends State<DownloadScreen> {
   // ALl that can be downloaded
   static final List<ChartCategory> _allCharts = [
     ChartCategory(
-      ChartCategory.databases,
+      ChartCategory.ChartType.databases,
+      ChartCategory.ChartType.databases.displayName,
       _absentColor,
       [
         Chart('DatabasesX', _absentColor, _absentIcon, 'databasesx', _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -387,7 +389,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       false,
     ),
     ChartCategory(
-      ChartCategory.sectional,
+      ChartCategory.ChartType.sectional,
+      ChartCategory.ChartType.sectional.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_SEC',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -402,7 +405,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], true,
     ),
     ChartCategory(
-      ChartCategory.tac,
+      ChartCategory.ChartType.tac,
+      ChartCategory.ChartType.tac.dislayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_TAC',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -417,7 +421,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], true,
     ),
     ChartCategory(
-      ChartCategory.ifrl,
+      ChartCategory.ChartType.ifrl,
+      ChartCategory.ChartType.ifrl.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_ENR_L',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -432,7 +437,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], true,
     ),
     ChartCategory(
-      ChartCategory.ifrh,
+      ChartCategory.ChartType.ifrh,
+      ChartCategory.ChartType.ifrh.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_ENR_H',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -447,7 +453,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], true,
     ),
     ChartCategory(
-      ChartCategory.ifra,
+      ChartCategory.ChartType.ifra,
+      ChartCategory.ChartType.ifra.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_ENR_A',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -462,7 +469,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], true,
     ),
     ChartCategory(
-      ChartCategory.heli,
+      ChartCategory.ChartType.heli,
+      ChartCategory.ChartType.heli.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_HEL',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -477,7 +485,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], true,
     ),
     ChartCategory(
-      ChartCategory.flyway,
+      ChartCategory.ChartType.flyway,
+      ChartCategory.ChartType.flyway.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_FLY',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -493,7 +502,8 @@ class DownloadScreenState extends State<DownloadScreen> {
     ),
 
     ChartCategory(
-      ChartCategory.plates,
+      ChartCategory.ChartType.plates,
+      ChartCategory.ChartType.plates.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_TPP',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -508,7 +518,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], false,
     ),
     ChartCategory(
-      ChartCategory.csup,
+      ChartCategory.ChartType.csup,
+      ChartCategory.ChartType.csup.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_CSUP',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -523,7 +534,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], false,
     ),
     ChartCategory(
-      ChartCategory.elevation,
+      ChartCategory.ChartType.elevation,
+      ChartCategory.ChartType.elevation.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_ELEVATION',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), false),

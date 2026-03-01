@@ -54,25 +54,30 @@ class Chart {
 // Chart category like sectional, IFR, ...
 class ChartCategory {
 
-  static const String sectional = "Sectional";
-  static const String tac = "TAC";
-  static const String ifrl = "IFR Low";
-  static const String ifrh = "IFR High";
-  static const String ifra = "IFR Area";
-  static const String flyway = "Flyway";
-  static const String heli = "Helicopter";
-  static const String plates = "Plates";
-  static const String databases = "Databases";
-  static const String csup = "CSUP";
-  static const String elevation = "Elevation";
+  enum ChartType {
+    sectional("Sectional"),
+    tac("TAC"),
+    ifrl("IFR Low"),
+    ifrh("IFR High"),
+    ifra("IFR Area"),
+    flyway("Flyway"),
+    heli("Helicopter"),
+    plates("Plates"),
+    databases("Databases"),
+    csup("CSUP"),
+    elevation("Elevation");
 
+    final String displayName;
+    const ChartType(this.displayName);
+  }
 
+  ChartType type;
   String title;
   Color color;
   List<Chart> charts;
   bool isChart;
 
-  ChartCategory(this.title, this.color, this.charts, this.isChart);
+  ChartCategory(this.type, this.title, this.color, this.charts, this.isChart);
 
   static String chartTypeToIndex(String type) {
     switch(type) {
