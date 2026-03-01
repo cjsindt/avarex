@@ -27,6 +27,7 @@ class DownloadManager {
     chart.enabled = false;
     chart.progress.value = 0;
     _charts.add(chart);
+    downloads.value++;
     chart.download.download(chart, nextCycle, backupServer, (c, progress) {
       Chart? c = _findChart(chart);
       if (null != c) {
@@ -76,6 +77,7 @@ class DownloadManager {
     chart.enabled = false;
     chart.progress.value = 0;
     _charts.add(chart);
+    downloads.value++;
     chart.download.delete(chart, (c, progress) {
       Chart? c = _findChart(chart);
       if (null != c) {
