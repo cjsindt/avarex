@@ -1,6 +1,6 @@
 name: Arm64-Linux
 
-on: workflow_dispatch
+on: push
 
 jobs:
 

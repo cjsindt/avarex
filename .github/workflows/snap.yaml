@@ -1,6 +1,6 @@
 name: Snap-Linux
 
-on: workflow_dispatch
+on: push
 
 jobs:
 
