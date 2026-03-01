@@ -1,6 +1,6 @@
 name: IOS
 
-on: push
+on: workflow_dispatch
 
 jobs:
 
