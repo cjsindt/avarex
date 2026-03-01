@@ -389,8 +389,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       false,
     ),
     ChartCategory(
-      ChartCategory.ChartType.sectional,
-      ChartCategory.ChartType.sectional.displayName,
+      ChartType.sectional,
+      ChartType.sectional.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_SEC',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -405,8 +405,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], true,
     ),
     ChartCategory(
-      ChartCategory.ChartType.tac,
-      ChartCategory.ChartType.tac.dislayName,
+      ChartType.tac,
+      ChartType.tac.dislayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_TAC',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -421,8 +421,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], true,
     ),
     ChartCategory(
-      ChartCategory.ChartType.ifrl,
-      ChartCategory.ChartType.ifrl.displayName,
+      ChartType.ifrl,
+      ChartType.ifrl.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_ENR_L',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -437,8 +437,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], true,
     ),
     ChartCategory(
-      ChartCategory.ChartType.ifrh,
-      ChartCategory.ChartType.ifrh.displayName,
+      ChartType.ifrh,
+      ChartType.ifrh.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_ENR_H',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -453,8 +453,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], true,
     ),
     ChartCategory(
-      ChartCategory.ChartType.ifra,
-      ChartCategory.ChartType.ifra.displayName,
+      ChartType.ifra,
+      ChartType.ifra.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_ENR_A',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -469,8 +469,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], true,
     ),
     ChartCategory(
-      ChartCategory.ChartType.heli,
-      ChartCategory.ChartType.heli.displayName,
+      ChartType.heli,
+      ChartType.heli.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_HEL',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -485,8 +485,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], true,
     ),
     ChartCategory(
-      ChartCategory.ChartType.flyway,
-      ChartCategory.ChartType.flyway.displayName,
+      ChartType.flyway,
+      ChartType.flyway.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_FLY',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -502,8 +502,8 @@ class DownloadScreenState extends State<DownloadScreen> {
     ),
 
     ChartCategory(
-      ChartCategory.ChartType.plates,
-      ChartCategory.ChartType.plates.displayName,
+      ChartType.plates,
+      ChartType.plates.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_TPP',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -518,8 +518,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], false,
     ),
     ChartCategory(
-      ChartCategory.ChartType.csup,
-      ChartCategory.ChartType.csup.displayName,
+      ChartType.csup,
+      ChartType.csup.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_CSUP',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), true),
@@ -534,8 +534,8 @@ class DownloadScreenState extends State<DownloadScreen> {
       ], false,
     ),
     ChartCategory(
-      ChartCategory.ChartType.elevation,
-      ChartCategory.ChartType.elevation.displayName,
+      ChartType.elevation,
+      ChartType.elevation.displayName,
       _absentColor,
       [
         Chart('Northeast',     _absentColor, _absentIcon, 'NE_ELEVATION',  _stateAbsentNone, "", ValueNotifier<int>(0), true, Download(), false),
