@@ -295,23 +295,20 @@ class DownloadScreenState extends State<DownloadScreen> {
       int selectedCharts = 0;
       for (Chart chart in cg.charts) {
         if (chart.progress.value > 0 && chart.progress.value < 100) {
+          selectedCharts++;
           inProgress = inProgress || true;
+          break;
         }
         switch (chart.state) {
-          case _stateAbsentDownload:
-            selectedCharts++;
-            break;
           case _stateExpiredNone:
             expired = expired || true;
-            break;
-          case _stateExpiredDownload:
-          case _stateExpiredDelete:
-            selectedCharts++;
-            inProgress = inProgress || true;
             break;
           case _stateCurrentNone:
             current = current || true;
             break;
+          case _stateAbsentDownload:
+          case _stateExpiredDownload:
+          case _stateExpiredDelete:
           case _stateCurrentDownload:
           case _stateCurrentDelete:
             selectedCharts++;
