@@ -298,20 +298,24 @@ class DownloadScreenState extends State<DownloadScreen> {
           inProgress = inProgress || true;
         }
         switch (chart.state) {
+          case _stateAbsentDownload:
+            selectedCharts++;
+            break;
           case _stateExpiredNone:
             expired = expired || true;
             break;
           case _stateExpiredDownload:
           case _stateExpiredDelete:
             selectedCharts++;
-            expired = expired || true;
+            inProgress = inProgress || true;
             break;
           case _stateCurrentNone:
+            current = current || true;
             break;
           case _stateCurrentDownload:
           case _stateCurrentDelete:
-          selectedCharts++;
-            current = current || true;
+            selectedCharts++;
+            inProgress = inProgress || true;
           default:
             break;
         }
