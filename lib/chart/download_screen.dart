@@ -20,6 +20,7 @@ const int _stateExpiredDelete = 7;
 const Color _absentColor = Constants.chartAbsentColor;
 const Color _currentColor = Constants.chartCurrentColor;
 const Color _expiredColor = Constants.chartExpiredColor;
+const Color _inProgressColor = Constants.chartDownloadingColor;
 
 const IconData _absentIcon = Icons.question_mark;
 const IconData _downloadedIcon = Icons.check;
@@ -288,34 +289,53 @@ class DownloadScreenState extends State<DownloadScreen> {
   void _updateCategory() {
     for (ChartCategory cg in _allCharts) {
       bool expired = false;
-      int currentCharts = 0;
+      bool current = false;
+      bool inProgress = false;
+      int selectedCharts = 0;
       for (Chart chart in cg.charts) {
+        if (chart.progress.value > 0 && chart.progress.value < 100) {
+          inProgress = inProgress || true;
+        }
         switch (chart.state) {
           case _stateExpiredNone:
+            expired = expired || true;
+            break;
           case _stateExpiredDownload:
           case _stateExpiredDelete:
+            selectedCharts++;
             expired = expired || true;
             break;
           case _stateCurrentNone:
+            break;
           case _stateCurrentDownload:
           case _stateCurrentDelete:
-            currentCharts++;
+          selectedCharts++;
+            current = current || true;
           default:
             break;
         }
       }
 
-      if(expired) {
+      if (inProgress) {
+        cg.color = _inProgressColor;
+      }
+      else if(expired) {
         cg.color = _expiredColor;
       }
-      else if (currentCharts > 0) {
+      else if (current) {
         cg.color = _currentColor;
       }
       else {
         cg.color = _absentColor;
       }
 
-      cg.title = "${cg.type.displayName} ($currentCharts of ${cg.charts.length})";
+      if (selectedCharts > 0) {
+        cg.title = "${cg.type.displayName} ($selectedCharts of ${cg.charts.length})";
+      }
+      else {
+        cg.title = cg.type.displayName;
+      }
+      
     }
   }
 
