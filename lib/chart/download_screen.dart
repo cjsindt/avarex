@@ -139,6 +139,7 @@ class DownloadScreenState extends State<DownloadScreen> {
           ValueListenableBuilder<int>(
             valueListenable: chart.progress,
             builder: (context, value, _) {
+            _updateCategory();
             if(value >= 100) {
               // download success
               chart.progress.value = 0;
