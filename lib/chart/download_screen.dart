@@ -201,6 +201,7 @@ class DownloadScreenState extends State<DownloadScreen> {
         chart.color = _expiredColor;
         break;
     }
+    _updateCategory();
   }
 
   void _chartTouched(Chart chart) {
